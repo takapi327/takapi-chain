@@ -2,7 +2,11 @@ module github.com/takapi327/takapi-chain
 
 go 1.18
 
-require github.com/cosmos/cosmos-sdk v0.45.3
+require (
+  github.com/cosmos/cosmos-sdk v0.45.3
+  github.com/tendermint/tendermint v0.34.19
+  github.com/tendermint/tm-db v0.6.6
+)
 
 require (
 	filippo.io/edwards25519 v1.0.0-beta.2 // indirect
@@ -99,3 +103,5 @@ require (
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
+
