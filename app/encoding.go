@@ -4,6 +4,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/std"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
 /*
@@ -25,4 +28,27 @@ type EncodingConfig struct {
 	Codec             codec.Codec
 	TxConfig          client.TxConfig
 	LegacyAmino       *codec.LegacyAmino
+}
+
+func makeEncodingConfig() EncodingConfig {
+	amino := codec.NewLegacyAmino()
+	interfaceRegistry := types.NewInterfaceRegistry()
+	codec := codec.NewProtoCodec(interfaceRegistry)
+	txCfg := tx.NewTxConfig(codec, tx.DefaultSignModes)
+
+	return EncodingConfig{
+		InterfaceRegistry: interfaceRegistry,
+		Codec:             codec,
+		TxConfig:          txCfg,
+		LegacyAmino:       amino,
+	}
+}
+
+func MakeEncodingConfig(moduleBasics module.BasicManager) EncodingConfig {
+	encodingConfig := makeEncodingConfig()
+	std.RegisterLegacyAminoCodec(encodingConfig.LegacyAmino)
+	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	moduleBasics.RegisterLegacyAminoCodec(encodingConfig.LegacyAmino)
+	moduleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	return encodingConfig
 }
